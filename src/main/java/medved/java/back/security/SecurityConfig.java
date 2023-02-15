@@ -36,13 +36,8 @@ public class SecurityConfig {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests().antMatchers("/base/**").permitAll()
+                .authorizeRequests().antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
-//                .authorizeHttpRequests(request -> request
-//                        .requestMatchers("/base/**").permitAll()
-////                        .requestMatchers("/", "/login").hasAnyRole("USER")
-//                        .anyRequest().authenticated()
-//                )
                 .and()
                 .httpBasic();
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

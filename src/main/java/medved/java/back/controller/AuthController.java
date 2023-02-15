@@ -13,16 +13,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 
 @Slf4j
 @RestController
-@RequestMapping("/base")
+@RequestMapping("")
 public class AuthController {
     private AuthenticationManager authenticationManager;
     private UserRepository userRepository;
@@ -41,25 +38,27 @@ public class AuthController {
         this.jwtGenerator = jwtGenerator;
     }
 
+    @CrossOrigin
     @PostMapping("login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody LoginDto loginDto) {
         log.info("-> Login user: {}", loginDto);
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword())
+                new UsernamePasswordAuthenticationToken(loginDto.getLogin(), loginDto.getPassword())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generateToken(authentication);
         return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
     }
 
+    @CrossOrigin
     @PostMapping("register")
     public ResponseEntity<String> register(@RequestBody UserDto userDto) {
         log.info("-> Register new user: {}", userDto);
-        if (userRepository.existsByUsername(userDto.getUsername())) {
+        if (userRepository.existsByUsername(userDto.getLogin())) {
             return new ResponseEntity<>("Username is busy!", HttpStatus.BAD_REQUEST);
         }
         UserEntity user = new UserEntity();
-        user.setUsername(userDto.getUsername());
+        user.setUsername(userDto.getLogin());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         Role role = roleRepository.findByName("USER").get();
