@@ -20,7 +20,7 @@ public interface FileRepository extends JpaRepository<FileEntity, String> {
 
     @Modifying
     @Query("update FileEntity f set f.fileName=:newname where f.fileName=:filename and f.user=:user")
-    void editFileName(@Param("user") FileEntity user,
+    void editFileName(@Param("user") UserEntity user,
                       @Param("filename") String fileName,
                       @Param("newname") String newName);
 }

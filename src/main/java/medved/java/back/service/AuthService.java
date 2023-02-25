@@ -53,6 +53,6 @@ public class AuthService {
         user.setRoles(Collections.singletonList(role));
 
         userRepository.save(user);
-        return new ResponseEntity<String>("User added to Database!", HttpStatus.OK);
+        return new ResponseEntity<>("User added to Database!", HttpStatus.OK);
     }
 }
