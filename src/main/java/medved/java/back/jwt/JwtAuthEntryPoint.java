@@ -1,4 +1,4 @@
-package medved.java.back.security;
+package medved.java.back.jwt;
 
 //import jakarta.servlet.ServletException;
 //import jakarta.servlet.http.HttpServletRequest;

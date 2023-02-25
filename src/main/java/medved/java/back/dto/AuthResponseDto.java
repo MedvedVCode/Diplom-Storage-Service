@@ -1,4 +1,4 @@
-package medved.java.back.entity;
+package medved.java.back.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

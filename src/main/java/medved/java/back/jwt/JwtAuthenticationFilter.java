@@ -1,11 +1,9 @@
-package medved.java.back.security;
+package medved.java.back.jwt;
 
-//import jakarta.servlet.FilterChain;
-//import jakarta.servlet.ServletException;
-//import jakarta.servlet.http.HttpServletRequest;
-//import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import medved.java.back.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,17 +19,12 @@ import java.io.IOException;
 
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final int BEARER_SIZE = 7;
+    @Value("${jwt.token.bearer-size}")
+    private int bearerSize;
     @Autowired
     private JwtGenerator tokenGenerator;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
-
-//    @Autowired
-//    public JwtAuthenticationFilter(JWTGenerator tokenGenerator, CustomUserDetailsService customUserDetailsService) {
-//        this.tokenGenerator = tokenGenerator;
-//        this.customUserDetailsService = customUserDetailsService;
-//    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -39,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         log.info("-> Do Filter Internal");
         String token = getJWTFromRequest(request);
+        log.info("-> token {}", token);
         if (StringUtils.hasText(token) && tokenGenerator.validateToken(token)) {
             String username = tokenGenerator.getUsernameFromJWT(token);
 
@@ -56,9 +50,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String getJWTFromRequest(HttpServletRequest request) {
         log.info("-> get Bearer token from Request");
-        String bearerToken = request.getHeader("Authorization");
+        String bearerToken = request.getHeader("auth-token");
+//        String bearerToken = request.getHeader("Authentication");
+        log.info("-> bearerToken {}", bearerToken);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(BEARER_SIZE);
+            return bearerToken.substring(bearerSize);
         }
         return null;
     }

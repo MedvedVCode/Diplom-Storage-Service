@@ -1,4 +1,4 @@
-package medved.java.back.entity;
+package medved.java.back.dto;
 
 import lombok.Data;
 

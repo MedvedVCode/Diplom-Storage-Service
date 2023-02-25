@@ -1,4 +1,4 @@
-package medved.java.back.security;
+package medved.java.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import medved.java.back.entity.Role;
@@ -7,6 +7,7 @@ import medved.java.back.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
