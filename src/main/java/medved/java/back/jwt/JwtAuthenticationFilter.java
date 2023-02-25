@@ -33,13 +33,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("-> Do Filter Internal");
         String token = getJWTFromRequest(request);
         log.info("-> token {}", token);
-        if (StringUtils.hasText(token) && tokenGenerator.validateToken(token)) {
+        if (StringUtils.hasText(token) && tokenGenerator.validateToken(token) && SecurityContextHolder.getContext().getAuthentication() == null) {
             String username = tokenGenerator.getUsernameFromJWT(token);
 
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
 
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userDetails, userDetails.getAuthorities());
+                    new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
 
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
@@ -51,7 +51,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String getJWTFromRequest(HttpServletRequest request) {
         log.info("-> get Bearer token from Request");
         String bearerToken = request.getHeader("auth-token");
-//        String bearerToken = request.getHeader("Authentication");
         log.info("-> bearerToken {}", bearerToken);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(bearerSize);

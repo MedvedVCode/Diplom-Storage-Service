@@ -26,7 +26,6 @@ public class AuthController {
 
     @PostMapping("login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody LoginDto loginDto) {
-        log.info("-> Login user: {}", loginDto);
         return new ResponseEntity<>(authService.login(loginDto), HttpStatus.OK);
     }
 

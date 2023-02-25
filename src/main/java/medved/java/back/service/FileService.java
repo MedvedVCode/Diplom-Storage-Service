@@ -9,6 +9,8 @@ import medved.java.back.repository.TokenRepository;
 import medved.java.back.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,26 +23,26 @@ import java.util.stream.Collectors;
 public class FileService {
     private UserRepository userRepository;
     private FileRepository fileRepository;
-    private TokenRepository tokenRepository;
     @Value("${jwt.token.bearer-size}")
     private int bearerSize;
 
     @Autowired
-    public FileService(UserRepository userRepository, FileRepository fileRepository, TokenRepository tokenRepository) {
+    public FileService(UserRepository userRepository, FileRepository fileRepository) {
         this.userRepository = userRepository;
         this.fileRepository = fileRepository;
-        this.tokenRepository = tokenRepository;
     }
 
     private UserEntity getUser(String authToken) {
-        log.info("-> Trying to get user from jwt");
-        String username = tokenRepository.getUserByToken(authToken.substring(bearerSize));
-        log.info("-> Username by token {}", username);
-        return userRepository.findByUsername(username).get();
+        log.info("-> Trying to get user from security");
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        log.info("-> Username by token {}", userDetails.getUsername());
+        return userRepository.findByUsername(userDetails.getUsername()).get();
     }
 
     public List<FileDto> getAllFiles(String authToken, Integer limit) {
         UserEntity user = getUser(authToken);
+
         log.info("-> Get all files service works...");
         return fileRepository.findAllByUser(user)
                 .stream()

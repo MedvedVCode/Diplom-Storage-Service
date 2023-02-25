@@ -1,6 +1,7 @@
 package medved.java.back.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +22,15 @@ public class JwtGenerator {
     public String generateToken(Authentication authentication) {
         log.info("-> Generate Token");
         String username = authentication.getName();
+        log.info("-> username {}", username);
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + jwtExpiration);
-
+log.info("current date {}, expireDate {}", currentDate, expireDate);
         String token =  Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(new Date())
+                .setIssuedAt(currentDate)
                 .setExpiration(expireDate)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret.getBytes())
+                .signWith(SignatureAlgorithm.HS256, jwtSecret)
                 .compact();
         log.info("-> generate token {}", token);
         return token;
@@ -40,14 +42,16 @@ public class JwtGenerator {
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody();
+        log.info("-> clails.getSubject {}", claims.getSubject());
         return claims.getSubject();
     }
 
     public boolean validateToken(String token){
         log.info("-> Check for valid Token");
         try{
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
-            return true;
+            Jws<Claims> claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            return !claims.getBody().getExpiration().before(new Date());
+//            return true;
         }catch(Exception ex){
             throw new AuthenticationCredentialsNotFoundException("JWT was expired or incorrect!");
         }

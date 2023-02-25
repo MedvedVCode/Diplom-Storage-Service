@@ -30,7 +30,6 @@ public class AuthService {
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
     private JwtGenerator jwtGenerator;
-    private TokenRepository tokenRepository;
 
     public AuthResponseDto login(LoginDto loginDto) {
         log.info("-> Login user: {}", loginDto);
@@ -39,7 +38,6 @@ public class AuthService {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generateToken(authentication);
-        tokenRepository.saveToken(token, loginDto.getLogin());
         return new AuthResponseDto(token);
     }
 
