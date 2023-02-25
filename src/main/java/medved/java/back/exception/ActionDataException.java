@@ -1,6 +1,6 @@
 package medved.java.back.exception;
 
-public class ActionDataException extends RuntimeException{
+public class ActionDataException extends RuntimeException {
     public ActionDataException() {
     }
 

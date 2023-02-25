@@ -22,7 +22,7 @@ public class ExceptionControllerAdvice {
     }
 
     @ExceptionHandler(ActionDataException.class)
-    public ResponseEntity<ErrorDto> handleActionData(ActionDataException e){
+    public ResponseEntity<ErrorDto> handleActionData(ActionDataException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorDto(e.getMessage(), 500));
     }
 }

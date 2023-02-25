@@ -8,7 +8,6 @@ import medved.java.back.entity.Role;
 import medved.java.back.entity.UserEntity;
 import medved.java.back.jwt.JwtGenerator;
 import medved.java.back.repository.RoleRepository;
-import medved.java.back.repository.TokenRepository;
 import medved.java.back.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

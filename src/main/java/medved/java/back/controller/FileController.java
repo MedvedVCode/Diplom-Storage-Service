@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 
@@ -32,9 +31,8 @@ public class FileController {
     public ResponseEntity<?> uploadFile(
             @RequestParam("filename") String filename,
             MultipartFile file) {
-            fileService.uploadFile(filename, file);
+        fileService.uploadFile(filename, file);
         return new ResponseEntity<>(HttpStatus.OK);
-
     }
 
     @DeleteMapping("file")
