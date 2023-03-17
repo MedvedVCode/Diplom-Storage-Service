@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class FileController {
 
-    private FileService fileService;
+    private final FileService fileService;
 
     @GetMapping("list")
     public List<FileDto> getAllFiles(@RequestParam("limit") Integer limit) {
